@@ -1,0 +1,43 @@
+<div class="container p-8">
+  <div class="event-banner">
+  </div>
+  <div class="p-4">
+    <h2><%= @event.name %></h2>
+    <p><%= @event.description %></p>
+    <p><%= @event.address %></p>
+    <p><%= @event.start_date %> - <%= @event.end_date %></p>
+    <% if @event.start_date > Date.yesterday %>
+      <% if attendee = @event.event_attendees.find_by(user_id: current_user.id)%>
+        <%= link_to "Un-Join", event_attendee_path(attendee), data: { turbo_method: :delete }, class: "btn btn-secondary" %>
+      <% else %>
+        <%= link_to "Join", event_event_attendees_path(@event), data: { turbo_method: :post }, class: "btn btn-primary" %>
+      <% end %>
+    <% else %>
+        <h2>Reviews</h2>
+        <% @event.reviews.each do |review| %>
+          <div class="bg-white p-4">
+            <p class="fs-4"><%= review.user.username %>:</p>
+            <p><%= review.content %></p>
+            <h2>Comments</h2>
+            <% review.comments.each do |comment| %>
+              <div>
+                <p><%= comment.user.username %></p>
+                <p><%= comment.content %></p>
+              </div>
+            <% end %>
+            <%= simple_form_for [@event, review, @comment] do |f| %>
+              <%= f.input :content %>
+              <%= f.submit class: "btn btn-primary" %>
+            <% end %>
+          </div>
+        <% end %>
+      <div>
+        <h2>Add a Review</h2>
+        <%= simple_form_for [@event, @review] do |f| %>
+          <%= f.input :content %>
+          <%= f.submit class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

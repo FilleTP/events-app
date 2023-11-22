@@ -1,0 +1,32 @@
+<div class="container p-4">
+  <h1>Future Events</h1>
+  <div class="row g-5">
+    <% @events.each do |event| %>
+      <div class="event-card col-md-3">
+        <%= image_tag "logo_events" %>
+        <div class="bottom-event-card d-flex justify-content-between p-3 bg-white">
+          <div>
+            <h2 class="fs-5"><%= event.name %></h2>
+            <p class="fs-6"><%= event.address %></p>
+          </div>
+          <%= link_to "Show", event_path(event), class: "btn btn-primary button-show-event" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <h1>Passed Events</h1>
+  <div class="row g-5">
+    <% @passed_events.each do |event| %>
+      <div class="event-card col-md-3">
+        <%= image_tag "logo_events" %>
+        <div class="bottom-event-card d-flex justify-content-between p-3 bg-white">
+          <div>
+            <h2 class="fs-5"><%= event.name %></h2>
+            <p class="fs-6"><%= event.address %></p>
+          </div>
+          <%= link_to "Show", event_path(event), class: "btn btn-primary button-show-event" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
