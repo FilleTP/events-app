@@ -4,10 +4,11 @@ Rails.application.routes.draw do
 
   resources :events do
     resources :event_attendees, only: :create
+    resources :comments, only: [:new, :create, :destroy]
+    resources :messages, only: [:create]
     resources :reviews, only: [:create] do
       resources :comments, only: [:create, :destroy]
     end
-    resources :comments, only: [:new, :create, :destroy]
   end
   resources :event_attendees, only: :destroy
 end

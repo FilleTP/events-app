@@ -7,10 +7,26 @@
     <p><%= @event.address %></p>
     <p><%= @event.start_date %> - <%= @event.end_date %></p>
     <% if @event.start_date > Date.yesterday %>
+      <div class="d-flex justify-content-between">
       <% if attendee = @event.event_attendees.find_by(user_id: current_user.id)%>
         <%= link_to "Un-Join", event_attendee_path(attendee), data: { turbo_method: :delete }, class: "btn btn-secondary" %>
       <% else %>
         <%= link_to "Join", event_event_attendees_path(@event), data: { turbo_method: :post }, class: "btn btn-primary" %>
+      <% end %>
+      <% if @event.user == current_user %>
+        <%= link_to "Update", edit_event_path(@event), class: "btn btn-primary" %>
+      <% end %>
+      </div>
+      <% @event.comments.each do |comment| %>
+        <div class="bg-white p-4">
+          <h2>Comments</h2>
+          <p class="fs-4"><%= comment.user.username %>:</p>
+          <p><%= comment.content %></p>
+        </div>
+      <% end %>
+      <%= simple_form_for [@event, @comment] do |f| %>
+        <%= f.input :content %>
+        <%= f.submit class: "btn btn-primary" %>
       <% end %>
     <% else %>
         <h2>Reviews</h2>
@@ -25,9 +41,11 @@
                 <p><%= comment.content %></p>
               </div>
             <% end %>
-            <%= simple_form_for [@event, review, @comment] do |f| %>
-              <%= f.input :content %>
-              <%= f.submit class: "btn btn-primary" %>
+            <% if event.attendees.include?(current_user) %>
+              <%= simple_form_for [@event, review, @comment] do |f| %>
+                <%= f.input :content %>
+                <%= f.submit class: "btn btn-primary" %>
+              <% end %>
             <% end %>
           </div>
         <% end %>
@@ -39,5 +57,23 @@
         <% end %>
       </div>
     <% end %>
+  </div>
+  <div class="chatroom-div" data-controller="chatroom" data-chatroom-id="<%= @event.chatroom.id %>">
+    <div class="chatroom-header">
+      <h2 class="fs-5">Chatroom</h2>
+    </div>
+    <div class="messages"  data-chatroom-target="messages">
+      <% @event.chatroom.messages.each do |message| %>
+        <%= render 'messages/message', message: message %>
+      <% end %>
+    </div>
+    <div>
+      <%= simple_form_for [@event, @message] do |f| %>
+        <%= f.input :content %>
+        <div class="d-flex justify-content-end">
+          <%= f.submit class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
   </div>
 </div>
